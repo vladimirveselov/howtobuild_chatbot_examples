@@ -1,0 +1,10 @@
+var chatbot = new Object();
+chatbot.memory = new Object();
+chatbot.question = "хочу полететь в Санкт Петербург";
+console.log(chatbot.question);
+var destinationRegex = /.* в (Москву|Одессу|Нью Йорк|Санкт Петербург)/g; 
+var match = destinationRegex.exec(chatbot.question); 
+console.log(match.join());
+chatbot.memory.airTicket_destination= match[1];
+chatbot.response = "Когда вы хотите лететь в " + chatbot.memory.airTicket_destination + "?";
+console.log(chatbot.response);

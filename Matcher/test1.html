@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="Windows-1251">
+<title>Чатбот Тест</title>
+<meta name="description" content="ЧатботTest">
+<meta name="author" content="Владимир Веселов">
+<link href='http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<style>
+    body {
+        font-family: 'Neucha', cursive;
+        font-size: 28px;
+        width: 600px;
+        margin: 50px auto 50px auto;
+      }
+</style>
+<script src="chatbot.js"></script>
+<script async>
+	var rule1 = new Rule([ "тест один", "один неконтекст" ], null, null,
+			[ "тест один ответ" ], null, null);
+	chatbot.addRule(rule1);
+	var rule2 = new Rule([ "тест два", "два неконтекст" ], null, null,
+			[ "тест два ответ" ], null, null);
+	chatbot.addRule(rule2);
+
+	var ruleDef = new Rule([ "default" ], null, null, [ "не понял" ], null,
+			null);
+	chatbot.addRule(ruleDef);
+
+	var ruleС1 = new Rule([ "тест один контекст" ], [ "один" ], "контекст",
+			[ "тест один контекст ответ" ], null, null);
+	chatbot.addRule(ruleС1);
+
+	var ruleС2 = new Rule([ "тест два контекст" ], [ "два" ], "контекст",
+			[ "тест два контекст ответ" ], null, null);
+	chatbot.addRule(ruleС2);
+
+	var ruleС3 = new Rule([ "выход из контекста" ], null, null,
+			[ "выход из контекста" ], null, null);
+	chatbot.addRule(ruleС3);
+
+	var ruleD1 = new Rule([ "купить билет" ], null, null, [ "замечательно" ],
+			(function() {
+				chatbot.dialogueId = "билет.хотитеКупить";
+			}), null);
+	chatbot.addRule(ruleD1);
+
+	var ruleD2 = new Rule([ "да" ], null, null,
+			[ "хорошо, сейчас будем покупать билет. Куда вы хотите лететь?" ],
+			(function() {
+				chatbot.dialogueId = "билет.куда";
+			}), "билет.хотитеКупить");
+	chatbot.addRule(ruleD2);
+
+	var ruleD3 = new Rule([ "нет" ], null, null,
+			[ "не хотите покупать билет сегодня" ], null, "билет.хотитеКупить");
+	chatbot.addRule(ruleD3);
+
+	var ruleND1 = new Rule([ "да" ], null, null, [ "что да?" ], null, null);
+	chatbot.addRule(ruleND1);
+
+	var ruleND2 = new Rule([ "нет" ], null, null, [ "что нет?" ], null, null);
+	chatbot.addRule(ruleND2);
+
+	var ruleD2_1 = new Rule([ "default" ], null, null, null, (function() {
+		chatbot.memory.destination = chatbot.question;
+		chatbot.response = "Место назначения: " + chatbot.memory.destination;
+	}), "билет.куда");
+	chatbot.addRule(ruleD2_1);
+
+	var ruleD2_2 = new Rule([ "не знаю" ], null, null, 
+			["значит не решили еще"],
+			null, "билет.куда");
+	chatbot.addRule(ruleD2_2);
+
+	var questions = [];
+	questions.push("тест один");
+	questions.push("тест два");
+	questions.push("непонятное");
+	questions.push("тест один контекст");
+	questions.push("один неконтекст");
+	questions.push("тест два контекст");
+	questions.push("два");
+	questions.push("выход из контекста");
+	questions.push("один неконтекст");
+	questions.push("два неконтекст");
+	questions.push("тест один контекст");
+	questions.push("два");
+	questions.push("выход из контекста");
+	questions.push("да");
+	questions.push("выход из контекста");
+	questions.push("нет");
+	questions.push("купить билет");
+	questions.push("нет");
+	questions.push("купить билет");
+	questions.push("да");
+	questions.push("Москва");
+    questions.push("выход из контекста");
+    questions.push("купить билет");
+    questions.push("да");
+    questions.push("не знаю еще");
+	setTimeout(doStuff, 3000);
+
+	function doStuff() {
+		var div = document.getElementById('holder');
+		div.innerHTML = "Старт<br>";
+		for (var i = 0, x = questions.length; i < x; i++) {
+			div.innerHTML += "Вопрос: " + questions[i] + "<br>";
+			console.log("вопрос: " + questions[i]);
+			chatbot.answer(questions[i])
+			div.innerHTML += "Ответ: " + chatbot.response + "<br>";
+			console.log("ответ: " + chatbot.response);
+			console.log("context: " + chatbot.context);
+			console.log("dialogueId: " + chatbot.dialogueId);
+		}
+	}
+</script>
+</head>
+<body>
+  <p>Test testing</p>
+  <div id='holder'>
+    <p>
+  </div>
+</body>
+</html>

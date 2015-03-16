@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="Windows-1251">
+<title>Чатбот Тест</title>
+<meta name="description" content="Демо - Кто быстрее, что больше? ">
+<meta name="author" content="Владимир Веселов">
+<link href='http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<style>
+    body {
+        font-family: 'Neucha', cursive;
+        font-size: 28px;
+        width: 600px;
+        margin: 50px auto 50px auto;
+      }
+</style>
+<script src="test.js"></script>
+<script async>
+        var chatbot = new Chatbot("демо-робот");
+	var questions = [];
+	questions.push("что больше яблоко или дыня");
+	questions.push("кто быстрее кролик или черепаха");
+	questions.push("кто быстрее кролик или волк");
+
+	setTimeout(doStuff, 500);
+
+	function doStuff() {
+		var div = document.getElementById('holder');
+		div.innerHTML = "<br>";
+		for (var i = 0, x = questions.length; i < x; i++) {
+			div.innerHTML += "Человек: " + questions[i] + "<br>";
+			console.log("вопрос: " + questions[i]);
+			chatbot.answer(questions[i]);
+			div.innerHTML += "Робот: " + chatbot.response + "<br>";
+		}
+	}
+
+</script>
+</head>
+<body>
+  <p>Кто быстрее, что больше?</p>
+  <div id='holder'>
+    <p>
+  </div>
+</body>
+</html>

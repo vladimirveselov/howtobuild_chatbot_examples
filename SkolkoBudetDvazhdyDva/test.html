@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="Windows-1251">
+<title>Чатбот Тест</title>
+<meta name="description" content="Демо - сколько будет дважды два">
+<meta name="author" content="Владимир Веселов">
+<link href='http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<style>
+    body {
+        font-family: 'Neucha', cursive;
+        font-size: 28px;
+        width: 600px;
+        margin: 50px auto 50px auto;
+      }
+</style>
+<script src="botmath.js"></script>
+<script async>
+        var queue = [
+               "привет",
+               "сколько будет дважды два?",
+               "два плюс три умножить на два?",
+        ];        	
+
+	setTimeout(doStuff, 500);
+
+	function doStuff() {
+		var div = document.getElementById('holder');
+		div.innerHTML = "<br>";
+		for (var i = 0, x = queue.length; i < x; i++) {
+			div.innerHTML += "Вопрос: " + queue[i] + "<br>";
+			div.innerHTML += "Ответ: " + tryToCalc(queue[i]) + "<br>";
+		}
+	}
+
+function tryToCalc(expression) {
+    console.log(expression);
+    var result = calc(expression);
+    if (typeof result != "undefined") {
+        return(result);
+    } else {
+        return("Не могу посчитать");
+    }
+}
+
+</script>
+</head>
+<body>
+  <p>Сколько будет дважды два?</p>
+  <div id='holder'>
+    <p>
+  </div>
+</body>
+</html>
