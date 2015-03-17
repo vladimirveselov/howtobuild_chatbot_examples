@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="Windows-1251">
+<title>Чатбот Тест</title>
+<meta name="description" content="ЧатботTest">
+<meta name="author" content="Владимир Веселов">
+<link href='http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<style>
+    body {
+        font-family: 'Neucha', cursive;
+        font-size: 28px;
+        width: 600px;
+        margin: 50px auto 50px auto;
+      }
+</style>
+<script src="chatbot.js"></script>
+<script async>
+	var rule1 = new Rule(
+		[ "Где ты живешь?" ], 
+		null, 
+		"Москва",
+		[ "Я живу в Москве" ], 
+		null, 
+		null);
+	chatbot.addRule(rule1);
+
+	var rule2 = new Rule(
+		[ "Москва большой город?", "Сколько человек живет в Москве?", "население Москвы" ], 
+		[ "Это большой город?", "Сколько человек там живет?", "население" ], 
+		"Москва",
+		[ "Население Москвы составляет около 12,5 миллионов человек по данным 2014 года" ], 
+		null, 
+		null);
+	chatbot.addRule(rule2);
+
+	var ruleDef = new Rule([ "default" ], null, null, [ "не понял" ], null,
+			null);
+	chatbot.addRule(ruleDef);
+
+	var questions = [];
+	questions.push("Привет");
+	questions.push("Где ты живешь?");
+	questions.push("Это большой город?");
+
+	setTimeout(doStuff, 3000);
+
+	function doStuff() {
+		var div = document.getElementById('holder');
+		div.innerHTML = "<br>";
+		for (var i = 0, x = questions.length; i < x; i++) {
+			div.innerHTML += "Человек: " + questions[i] + "<br>";
+			console.log("Чатбот: " + questions[i]);
+			chatbot.answer(questions[i])
+			div.innerHTML += "Ответ: " + chatbot.response + "<br>";
+			console.log("ответ: " + chatbot.response);
+			console.log("context: " + chatbot.context);
+			console.log("dialogueId: " + chatbot.dialogueId);
+		}
+	}
+</script>
+</head>
+<body>
+  <p>Контекст - Москва</p>
+  <div id='holder'>
+    <p>
+  </div>
+</body>
+</html>
