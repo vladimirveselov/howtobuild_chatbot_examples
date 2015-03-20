@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="Windows-1251">
+<title>Чатбот Тест</title>
+<meta name="description" content="ЧатботTest">
+<meta name="author" content="Владимир Веселов">
+<link href='http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+<style>
+    body {
+        font-family: 'Neucha', cursive;
+        font-size: 14px;
+        width: 500px;
+        margin: 50px auto 50px auto;
+      }
+    container {
+        font-family: 'Neucha', cursive;
+        font-size: 14px;
+        width: 500px;
+        margin: 50px auto 50px auto;
+      }
+	input  {
+        font-family: 'Neucha', cursive;
+        font-size: 14px;
+	  }
+    log  {
+        font-family: 'Neucha', cursive;
+        font-size: 14px;
+		height: 400px;
+		overflow:scroll;
+      }
+    answer {
+        font-family: 'Neucha', cursive;
+        font-size: 14px;
+      }
+    h1 {
+        font-family: 'Neucha', cursive;
+		font-size: 14px;
+		font-weight: bold;
+      }
+	  
+	h2 {
+        font-family: 'Neucha', cursive;
+		font-size: 14px;
+	  }
+
+</style>
+<script src="chatbot.js"></script>
+<script src="typewriter.js"></script>
+<script async>
+	var rule1 = new Rule(
+		[ "хочу в отпуск" ], 
+		null, 
+		null,
+		[ "Купить авиа билеты?" ], 
+		function () {
+                  chatbot.dialogueId = "КупитьБилетыДаНет";   
+                }, 
+		null);
+	chatbot.addRule(rule1);
+	
+	var ruleDefault = new Rule(
+		[ "default" ], 
+		null, 
+		null,
+		[ "Не понял" ], 
+		null, 
+		null);
+	chatbot.addRule(ruleDefault);
+
+	var ruleD1 = new Rule(
+		[ "да", "конечно", "купить" ], 
+		null, 
+		null,
+		[ "Куда?" ], 
+		function () {
+                  chatbot.dialogueId = "КупитьБилетыКуда";   
+                }, 
+		"КупитьБилетыДаНет");
+	chatbot.addRule(ruleD1);
+
+	var ruleD2 = new Rule(
+		[ "нет", "передумал", "в другой раз" ], 
+		null, 
+		null,
+		[ "Настроения людей переменчивы" ], 
+                null,
+		"КупитьБилетыДаНет");
+	chatbot.addRule(ruleD2);
+
+	var ruleDest1 = new Rule(
+		[ "хочу лететь в","Москву","Одессу","Нью Йорк","Санкт Петербург"], 
+		null, 
+		null,
+		null, 
+		function () { 
+			var destinationRegex = 
+			      /.* в (Москву|Одессу|Нью Йорк|Санкт Петербург)/g; 
+			var match = destinationRegex.exec(chatbot.question); 
+			if (match != null) { 
+				chatbot.memory.airTicket_destination= match[1];
+				chatbot.response = "Когда вы хотите лететь в " + 
+					chatbot.memory.airTicket_destination + "?"; 
+				chatbot.dialogueId = "КупитьБилетыКогда";
+			} else { 
+				chatbot.dialogueId = "КупитьБилетыКуда";
+				chatbot.response = "Не совсем вас понял. Уточните куда вы хотите лететь.";
+			}
+		}, 
+		"КупитьБилетыКуда");
+	chatbot.addRule(ruleDest1);
+
+	var ruleDest2 = new Rule(
+		[ "нет", "передумал", "в другой раз" ], 
+		null, 
+		null,
+		[ "Настроения людей переменчивы" ], 
+                null,
+		"КупитьБилетыКуда");
+	chatbot.addRule(ruleDest2);
+
+	var ruleWhen1 = new Rule(
+		[ "завтра","на следующей неделе","после завтра","после после завтра","default"], 
+		null, 
+		null,
+		null, 
+		function () { 
+			var whenRegex = 
+			      /(завтра|на следующей неделе|послезавтра|после послезавтра)/g; 
+                        console.log("|" + chatbot.question +"|");
+			var match = whenRegex.exec(chatbot.question); 
+			if (match != null) { 
+				var whenVerbal = match[1];                             
+                                switch(whenVerbal) {
+					case "завтра":
+						chatbot.memory.airTicket_when= new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+						break;
+					case "на следующей неделе":
+						chatbot.memory.airTicket_when= new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000);
+						break;
+					case "после завтра":
+						chatbot.memory.airTicket_when= new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
+						break;
+					case "после после завтра":
+						chatbot.memory.airTicket_when= new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000);
+                                }
+				var day = chatbot.memory.airTicket_when.getDate();
+				var month = chatbot.memory.airTicket_when.getMonth() + 1;
+				var year = chatbot.memory.airTicket_when.getFullYear();
+				chatbot.memory.airTicket_whenString = day + "/" + month + "/" + year;
+				chatbot.response = "Дата вылета: " + 
+					chatbot.memory.airTicket_whenString + ". Сколько билетов заказать?"; 
+				chatbot.dialogueId = "КупитьБилетыСколько";
+			} else { 
+				chatbot.dialogueId = "КупитьБилетыКогда";
+				chatbot.response = "Не совсем вас понял. Уточните когда вы хотите лететь.";
+			}
+		}, 
+		"КупитьБилетыКогда");
+	chatbot.addRule(ruleWhen1);
+
+	var ruleWhen2 = new Rule(
+		[ "нет", "передумал", "в другой раз" ], 
+		null, 
+		null,
+		[ "Настроения людей переменчивы" ], 
+                null,
+		"КупитьБилетыКогда");
+	chatbot.addRule(ruleWhen2);
+
+	var ruleHowMany1 = new Rule(
+		[ "один","два","три","четыре","default"], 
+		null, 
+		null,
+		null, 
+		function () { 
+			var howManyRegex = 
+			      /(один|два|три|четыре)/g; 
+			var match = howManyRegex.exec(chatbot.question); 
+			if (match != null) { 
+				chatbot.memory.airTicket_howMany= match[1];
+				chatbot.response = "Заказываю " + 
+					chatbot.memory.airTicket_howMany + " билета в " +
+                                        chatbot.memory.airTicket_destination + 
+                                        ". Дата вылета:" +
+					chatbot.memory.airTicket_whenString; 
+			} else { 
+				chatbot.dialogueId = "КупитьБилетыСколько";
+				chatbot.response = "Не совсем вас понял. Сколько нужно билетов?";
+			}
+		}, 
+		"КупитьБилетыСколько");
+	chatbot.addRule(ruleHowMany1);
+
+	var ruleHowMany2 = new Rule(
+		[ "нет", "передумал", "в другой раз" ], 
+		null, 
+		null,
+		[ "Настроения людей переменчивы" ], 
+                null,
+		"КупитьБилетыСколько");
+	chatbot.addRule(ruleHowMany2);
+
+	var ruleDef = new Rule([ "default" ], null, null, [ "не понял" ], null,
+			null);
+	chatbot.addRule(ruleDef);
+
+	var questions = [];
+	questions.push("Хочу в отпуск");
+	questions.push("Да");
+	questions.push("хочу лететь в Санкт Петербург");
+	questions.push("завтра");
+	questions.push("три");
+	questions.push("Хочу в отпуск");
+	questions.push("Нет");
+	questions.push("Хочу в отпуск");
+	questions.push("Да");
+	questions.push("хочу лететь в Париж");
+	questions.push("хочу лететь в Одессу");
+	questions.push("вчера");
+	questions.push("на следующей неделе");
+	questions.push("пять");
+	questions.push("четыре");
+	setTimeout(doStuff, 500);
+
+	function doStuff() {
+		inputElement = document.getElementById('user');
+		answerElement = document.getElementById('answer');
+		logElement = document.getElementById('log');
+		typeQAStart();
+	}
+</script>
+</head>
+<body>
+  <div id='container'>
+  <h1>Диалог - купить авиа билет</h1>
+  <p>Вопрос: <input type="text" size="80" id="user" onkeydown="ask(event);"></p>
+  <p>Ответ:</p>
+  <div id='answer'>
+  </div>
+  <h2>Log:</h2>
+  <div id='log'>
+  </div>
+  </div>
+</body>
+</html>
