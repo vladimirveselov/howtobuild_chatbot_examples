@@ -187,7 +187,7 @@ Chatbot.prototype = {
 
 var chatbot = new Chatbot();
 
-function ask(text) {
+function ask(event,text) {
 	if (event.keyCode == 13) {
 		chatbot.answer(text.value);
 		var divv = document.getElementById('answer');

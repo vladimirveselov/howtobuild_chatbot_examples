@@ -4,8 +4,14 @@ var inputElement;
 var answerElement;
 var logElement;
 var answers;
+var stopNow = false;
+
+function doStop() {
+	stopNow = true;
+}
 
 function typeQAStart()  {
+	stopNow = false;
 	currentQuestion = 0;
 	inputElement.value = "";
 	answerElement.innerHTML = "";
@@ -26,6 +32,9 @@ function typeQuestionStart() {
 	typeQuestion();
 }
 function typeQuestion() {
+	if (stopNow) {
+		return;
+	}
 	console.log("q char:" + typingCharacter);
 	console.log("length:" + questions[currentQuestion].length);
 	if (typingCharacter >= questions[currentQuestion].length) {
@@ -38,6 +47,9 @@ function typeQuestion() {
 }
 	
 function typeQuestionFinish() {
+	if (stopNow) {
+		return;
+	}
 	chatbot.answer(questions[currentQuestion]);
 	var answer = chatbot.response;
 	answers.push(answer);
@@ -51,6 +63,9 @@ function typeAnswerStart() {
 }
 	
 function typeAnswer() {
+	if (stopNow) {
+		return;
+	}
 	console.log("char:" + typingCharacter);
 	if (typingCharacter >= answers[currentQuestion].length) {
 		typeAnswerFinish();
@@ -61,6 +76,9 @@ function typeAnswer() {
 	setTimeout(typeAnswer, 150);
 }
 function typeAnswerFinish() {
+	if (stopNow) {
+		return;
+	}
 	var toLog = "Шаг: " + (currentQuestion+1) + "<br>";
 	toLog += "Вопрос: " + questions[currentQuestion] + "<br>";
 	toLog += "Ответ: " + answers[currentQuestion] + "<br>";

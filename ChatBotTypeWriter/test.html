@@ -13,7 +13,7 @@
         width: 500px;
         margin: 50px auto 50px auto;
       }
-    container {
+    .container {
         font-family: 'Neucha', cursive;
         font-size: 14px;
         width: 500px;
@@ -23,13 +23,13 @@
         font-family: 'Neucha', cursive;
         font-size: 14px;
 	  }
-    log  {
-        font-family: 'Neucha', cursive;
+    .container .log  {
+        font-family: 'Tahoma', serif;
         font-size: 14px;
 		height: 400px;
 		overflow:scroll;
       }
-    answer {
+    .answer {
         font-family: 'Neucha', cursive;
         font-size: 14px;
       }
@@ -95,7 +95,7 @@
 		null, 
 		function () { 
 			var destinationRegex = 
-			      /.* в (Москву|Одессу|Нью Йорк|Санкт Петербург)/g; 
+			      /.* в (Москву|Одессу|Нью Йорк|Санкт Петербург)/gi; 
 			var match = destinationRegex.exec(chatbot.question); 
 			if (match != null) { 
 				chatbot.memory.airTicket_destination= match[1];
@@ -221,7 +221,7 @@
 	questions.push("на следующей неделе");
 	questions.push("пять");
 	questions.push("четыре");
-	setTimeout(doStuff, 500);
+//	setTimeout(doStuff, 500);
 
 	function doStuff() {
 		inputElement = document.getElementById('user');
@@ -232,14 +232,18 @@
 </script>
 </head>
 <body>
-  <div id='container'>
+  <div class='container'>
   <h1>Диалог - купить авиа билет</h1>
-  <p>Вопрос: <input type="text" size="80" id="user" onkeydown="ask(event);"></p>
-  <p>Ответ:</p>
-  <div id='answer'>
+   <p>
+  <input type="submit" value="Auto" onclick="doStuff();">
+  <input type="submit" value="Stop" onclick="doStop();">
+   </p>
+ <p>Вопрос: <input type="text" size="80" id="user" onkeydown="ask(event,this);"></p>
+ <p>Ответ:</p> 
+ <div id='answer' class='answer'>
   </div>
   <h2>Log:</h2>
-  <div id='log'>
+  <div class='log' id='log'>
   </div>
   </div>
 </body>
